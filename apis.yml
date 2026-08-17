@@ -2,7 +2,7 @@ name: crob.at
 description: >-
   Free, no-login web tool for sharing Pokémon Showdown teams as visual pages, with a public REST API for
   creating/retrieving teams, generating random teams, and fetching sample teams.
-url: https://crob-at.apievangelist.com/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/crob-at/refs/heads/main/apis.yml
 created: '2026-07-20'
 modified: '2026-07-20'
 specificationVersion: '0.21'
