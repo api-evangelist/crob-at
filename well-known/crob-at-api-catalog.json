@@ -1,0 +1,127 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://crob.at/api",
+      "service-desc": [
+        {
+          "href": "https://crob.at/openapi.json",
+          "type": "application/vnd.oai.openapi+json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://crob.at/api",
+          "type": "text/html"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://crob.at/",
+          "type": "text/html"
+        }
+      ],
+      "api-catalog": [
+        {
+          "href": "https://crob.at/.well-known/apis.json",
+          "type": "application/json"
+        }
+      ],
+      "describedby": [
+        {
+          "href": "https://crob.at/.well-known/api-onboarding",
+          "type": "application/json"
+        }
+      ]
+    },
+    {
+      "anchor": "https://crob.at/api/team/:slug",
+      "service-doc": [
+        {
+          "href": "https://crob.at/api",
+          "type": "text/html"
+        }
+      ]
+    },
+    {
+      "anchor": "https://crob.at/api/team/:slug/:teamSlug",
+      "service-doc": [
+        {
+          "href": "https://crob.at/api",
+          "type": "text/html"
+        }
+      ]
+    },
+    {
+      "anchor": "https://crob.at/api/team",
+      "service-doc": [
+        {
+          "href": "https://crob.at/api",
+          "type": "text/html"
+        }
+      ]
+    },
+    {
+      "anchor": "https://crob.at/api/random-team/:format",
+      "service-doc": [
+        {
+          "href": "https://crob.at/api",
+          "type": "text/html"
+        }
+      ]
+    },
+    {
+      "anchor": "https://crob.at/api/random-team/:format/save",
+      "service-doc": [
+        {
+          "href": "https://crob.at/api",
+          "type": "text/html"
+        }
+      ]
+    },
+    {
+      "anchor": "https://crob.at/api/samples/:tier",
+      "service-doc": [
+        {
+          "href": "https://crob.at/api",
+          "type": "text/html"
+        }
+      ]
+    },
+    {
+      "anchor": "https://crob.at/api/type-chart-data",
+      "service-doc": [
+        {
+          "href": "https://crob.at/api",
+          "type": "text/html"
+        }
+      ]
+    },
+    {
+      "anchor": "https://crob.at/api/me",
+      "service-doc": [
+        {
+          "href": "https://crob.at/api",
+          "type": "text/html"
+        }
+      ]
+    },
+    {
+      "anchor": "https://crob.at/api/feedback",
+      "service-doc": [
+        {
+          "href": "https://crob.at/api",
+          "type": "text/html"
+        }
+      ]
+    },
+    {
+      "anchor": "https://crob.at/api/showdown/assertion",
+      "service-doc": [
+        {
+          "href": "https://crob.at/api",
+          "type": "text/html"
+        }
+      ]
+    }
+  ]
+}

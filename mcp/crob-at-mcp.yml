@@ -1,0 +1,41 @@
+generated: '2026-09-03'
+method: derived
+status: candidate
+source: openapi/crob-at-openapi.json
+description: >-
+  crob.at ships no MCP server — POST https://crob.at/mcp returned 404 on
+  2026-09-03, and neither the docs, the llms.txt, nor the APIs.json index name
+  one. This is a DERIVED candidate tool list mapped from the provider's own
+  OpenAPI operations; nobody serves these tools today.
+deployment:
+  mode: none
+  endpoint: ''
+  install: ''
+  package: ''
+  auth: none
+  verified: derived
+candidate_tools:
+  - name: get_team
+    operationId: getTeamBySlug
+    description: Retrieve a saved team paste by its public slug.
+  - name: get_team_in_paste
+    operationId: getTeamInPasteBySlug
+    description: Retrieve one named team from a multi-team paste.
+  - name: create_team
+    operationId: createTeam
+    description: Create a shareable team page from one or more Pokemon Showdown exports.
+  - name: generate_random_team
+    operationId: generateRandomTeam
+    description: Generate a usage-weighted competitive team for a format without saving it.
+  - name: save_random_team
+    operationId: saveRandomTeam
+    description: Save a generated team to an unlisted permanent URL (idempotencyKey supported).
+  - name: list_sample_teams
+    operationId: listSampleTeams
+    description: List Smogon sample teams for a competitive tier.
+  - name: get_type_chart_data
+    operationId: getTypeChartData
+    description: Read Pokemon names and types for type-effectiveness lookups.
+  - name: send_feedback
+    operationId: sendFeedback
+    description: Send product feedback to the crob.at team.

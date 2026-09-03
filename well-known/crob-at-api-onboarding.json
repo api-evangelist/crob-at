@@ -1,0 +1,74 @@
+{
+  "$schema": "https://apionboarding.org/schemas/0.1/api-onboarding.schema.json",
+  "aod": "0.1",
+  "provider": {
+    "name": "crob.at",
+    "url": "https://crob.at",
+    "portalUrl": "https://crob.at/api",
+    "apisJsonUrl": "https://crob.at/.well-known/apis.json"
+  },
+  "maturity": "self-serve",
+  "account": {
+    "required": false,
+    "signupUrl": "https://crob.at/signup",
+    "agentPolicy": "allowed",
+    "prerequisites": [
+      "Send valid JSON for write operations.",
+      "Provide teams in Pokemon Showdown export format."
+    ],
+    "plans": [
+      {
+        "name": "Free",
+        "requiredFor": "All public API operations. No API key, payment method, or paid plan is required.",
+        "url": "https://crob.at/api#plans"
+      }
+    ],
+    "termsOfService": {
+      "url": "https://crob.at/api#terms",
+      "acceptance": "implicit"
+    }
+  },
+  "verification": [],
+  "registration": {
+    "applicationNoun": "API client",
+    "owner": "user",
+    "mechanisms": [
+      {
+        "type": "open",
+        "description": "Public API operations are anonymous and keyless. Optional browser-session endpoints use the normal crob.at sign-in flow.",
+        "baseUrl": "https://crob.at/api",
+        "docsUrls": [
+          "https://crob.at/api",
+          "https://crob.at/openapi.json"
+        ]
+      }
+    ]
+  },
+  "authentication": {
+    "methods": [
+      {
+        "id": "public",
+        "type": "none",
+        "notes": "No authentication is required for public endpoints."
+      },
+      {
+        "id": "browser-session",
+        "type": "cookie-login",
+        "cookieName": "session",
+        "bootstrap": "Sign in at https://crob.at/login when using optional account or Pokemon Showdown helper endpoints.",
+        "notes": "The session cookie is for same-origin browser flows and is not an API key."
+      }
+    ]
+  },
+  "credentials": [],
+  "scopes": {
+    "model": "none",
+    "notes": "Public endpoints have no scopes. Session-aware helpers act only on the signed-in user's account."
+  },
+  "economics": {
+    "pricingUrl": "https://crob.at/api#plans",
+    "freeTier": "All documented API operations are free. Public reads and generation require no account. Team creation is limited to 500 requests per hour per client, generated-team saves to 30 per hour, and feedback to 5 per hour.",
+    "rateLimitsUrl": "https://crob.at/api#rate-limits"
+  },
+  "gaps": []
+}

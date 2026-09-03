@@ -1,0 +1,693 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "crob.at API",
+    "version": "1.0.0",
+    "description": "Create, retrieve, and generate competitive Pokemon Showdown teams, read reference data, and use optional crob.at session helpers.",
+    "termsOfService": "https://crob.at/api#terms",
+    "contact": {
+      "name": "crob.at API support",
+      "url": "https://crob.at/contact",
+      "email": "admin@crob.at"
+    }
+  },
+  "externalDocs": {
+    "description": "Human-readable API documentation",
+    "url": "https://crob.at/api"
+  },
+  "servers": [
+    {
+      "url": "https://crob.at",
+      "description": "Production"
+    }
+  ],
+  "security": [],
+  "tags": [
+    {
+      "name": "Teams",
+      "description": "Create and retrieve shareable Pokemon Showdown teams."
+    },
+    {
+      "name": "Generation",
+      "description": "Generate and optionally save competitive random teams."
+    },
+    {
+      "name": "Reference",
+      "description": "Read sample teams and Pokemon reference data."
+    },
+    {
+      "name": "Account",
+      "description": "Optional same-origin helpers that use a crob.at browser session."
+    },
+    {
+      "name": "Feedback",
+      "description": "Send product feedback to the crob.at team."
+    }
+  ],
+  "paths": {
+    "/api/team/{slug}": {
+      "get": {
+        "tags": ["Teams"],
+        "summary": "Retrieve a team",
+        "description": "Returns a saved single-team or multi-team paste by its public slug.",
+        "operationId": "getTeamBySlug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "description": "The team's public slug.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The saved team.",
+            "headers": {
+              "Cache-Control": {
+                "description": "Public response cache policy.",
+                "schema": { "type": "string" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Team" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/api/team/{slug}/{teamSlug}": {
+      "get": {
+        "tags": ["Teams"],
+        "summary": "Retrieve one team from a multi-team paste",
+        "description": "Returns one named team from a saved multi-team paste. Use the child slug shown in the shared URL or derived from the team name.",
+        "operationId": "getTeamInPasteBySlug",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "description": "The multi-team paste's public slug.",
+            "schema": { "type": "string", "minLength": 1 }
+          },
+          {
+            "name": "teamSlug",
+            "in": "path",
+            "required": true,
+            "description": "The selected team's slug within the paste.",
+            "schema": { "type": "string", "minLength": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The selected team.",
+            "headers": {
+              "Cache-Control": {
+                "description": "Public response cache policy.",
+                "schema": { "type": "string" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TeamInPaste" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/api/team": {
+      "post": {
+        "tags": ["Teams"],
+        "summary": "Create a team",
+        "description": "Creates a shareable team from one or more Pokemon Showdown exports. No account or API key is required.",
+        "operationId": "createTeam",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateTeamRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The team was created.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CreatedTeam" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/random-team/{format}": {
+      "get": {
+        "tags": ["Generation"],
+        "summary": "Generate a random team",
+        "description": "Generates a usage-weighted competitive team without saving it.",
+        "operationId": "generateRandomTeam",
+        "parameters": [
+          { "$ref": "#/components/parameters/Format" }
+        ],
+        "responses": {
+          "200": {
+            "description": "A generated Pokemon Showdown team and its rendered card HTML.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GeneratedTeam" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "502": {
+            "description": "The upstream usage-data source could not be read.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/random-team/{format}/save": {
+      "post": {
+        "tags": ["Generation"],
+        "summary": "Save a generated team",
+        "description": "Creates an unlisted permanent URL for a previously generated team. Reuse one idempotencyKey when a save request is retried.",
+        "operationId": "saveRandomTeam",
+        "parameters": [
+          { "$ref": "#/components/parameters/Format" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["teamText"],
+                "properties": {
+                  "teamText": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500000,
+                    "description": "A Pokemon Showdown team export returned by the generation endpoint."
+                  },
+                  "idempotencyKey": {
+                    "type": "string",
+                    "minLength": 16,
+                    "maxLength": 64,
+                    "pattern": "^[A-Za-z0-9_-]+$",
+                    "description": "A stable retry key. Reuse it only for the same generated team."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The generated team was saved.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CreatedTeam" }
+              }
+            }
+          },
+          "200": {
+            "description": "A retry returned the team that was already saved with this idempotency key.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CreatedTeam" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/samples/{tier}": {
+      "get": {
+        "tags": ["Reference"],
+        "summary": "List sample teams",
+        "description": "Returns the available Smogon sample teams for a competitive tier.",
+        "operationId": "listSampleTeams",
+        "parameters": [
+          {
+            "name": "tier",
+            "in": "path",
+            "required": true,
+            "description": "An alphanumeric Showdown format identifier, such as gen9ou.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9]+$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sample teams, or an empty array when none are available.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/SampleTeam" }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/api/type-chart-data": {
+      "get": {
+        "tags": ["Reference"],
+        "summary": "Read Pokemon type data",
+        "description": "Returns Pokemon names and their types for the interactive type chart.",
+        "operationId": "getTypeChartData",
+        "responses": {
+          "200": {
+            "description": "Pokemon names paired with one or two types.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "prefixItems": [
+                      { "type": "string" },
+                      {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 2,
+                        "items": { "type": "string" }
+                      }
+                    ],
+                    "items": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me": {
+      "get": {
+        "tags": ["Account"],
+        "summary": "Read the current user",
+        "description": "Returns the current crob.at user when a valid browser session cookie is present, otherwise returns a null user.",
+        "operationId": "getCurrentUser",
+        "security": [
+          { "cookieSession": [] },
+          {}
+        ],
+        "responses": {
+          "200": {
+            "description": "The current user or null.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["user"],
+                  "properties": {
+                    "user": {
+                      "oneOf": [
+                        { "$ref": "#/components/schemas/CurrentUser" },
+                        { "type": "null" }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/feedback": {
+      "post": {
+        "tags": ["Feedback"],
+        "summary": "Send feedback",
+        "description": "Sends a feedback message with optional contact details.",
+        "operationId": "sendFeedback",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["message"],
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000,
+                    "pattern": "\\S",
+                    "description": "The trimmed message must contain a non-whitespace character and be at most 2,000 characters."
+                  },
+                  "contact": {
+                    "type": "string",
+                    "description": "Optional contact details. Values longer than 100 characters are truncated."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Feedback was accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["success"],
+                  "properties": {
+                    "success": { "const": true }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "429": { "$ref": "#/components/responses/RetryAfterRateLimited" },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/api/showdown/assertion": {
+      "post": {
+        "tags": ["Account"],
+        "summary": "Start browser-side Showdown assertion generation",
+        "description": "Redirects the signed-in user's browser to Pokemon Showdown so the challstr-specific assertion is generated from the user's network rather than crob.at's server.",
+        "operationId": "createShowdownAssertion",
+        "security": [
+          { "cookieSession": [] }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["challstr"],
+                "properties": {
+                  "challstr": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048,
+                    "pattern": "^[^\\r\\n]+$",
+                    "description": "A Pokemon Showdown challenge string without line breaks."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "303": {
+            "description": "Redirect to Pokemon Showdown's OAuth assertion endpoint.",
+            "headers": {
+              "Location": {
+                "required": true,
+                "schema": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": {
+            "description": "A linked, authenticated Showdown account is required.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "503": {
+            "description": "Showdown OAuth is not configured.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "cookieSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "session",
+        "description": "Optional crob.at browser session cookie. Public endpoints do not require it."
+      }
+    },
+    "parameters": {
+      "Format": {
+        "name": "format",
+        "in": "path",
+        "required": true,
+        "description": "An alphanumeric Showdown format identifier, such as gen9ou.",
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+$"
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "The request body or route parameter is invalid.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The requested resource was not found.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "The per-client write limit was exceeded.",
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds until the request may be retried.",
+            "schema": { "type": "integer", "minimum": 1 }
+          },
+          "X-RateLimit-Limit": {
+            "description": "Requests permitted in the current window.",
+            "schema": { "type": "integer" }
+          },
+          "X-RateLimit-Remaining": {
+            "description": "Requests remaining in the current window.",
+            "schema": { "type": "integer" }
+          },
+          "X-RateLimit-Reset": {
+            "description": "ISO 8601 timestamp when the window resets.",
+            "schema": { "type": "string", "format": "date-time" }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "RetryAfterRateLimited": {
+        "description": "The per-client write limit was exceeded.",
+        "headers": {
+          "Retry-After": {
+            "description": "Seconds until the request may be retried.",
+            "schema": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "ServerError": {
+        "description": "The request could not be completed because of a server error.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": { "type": "string" },
+          "message": { "type": "string" },
+          "retryAfter": { "type": "integer", "minimum": 1 }
+        }
+      },
+      "TeamPaste": {
+        "type": "object",
+        "required": ["paste"],
+        "properties": {
+          "format": { "type": ["string", "null"] },
+          "name": { "type": ["string", "null"] },
+          "paste": { "type": "string" }
+        }
+      },
+      "Team": {
+        "type": "object",
+        "required": ["slug", "name", "author", "description", "public", "image", "source_url", "created_at", "views", "is_multi", "teams"],
+        "properties": {
+          "slug": { "type": "string" },
+          "name": { "type": ["string", "null"] },
+          "author": { "type": ["string", "null"] },
+          "description": { "type": ["string", "null"] },
+          "public": {
+            "type": "boolean",
+            "description": "Whether the team may appear in the public gallery and search."
+          },
+          "image": { "type": "string", "format": "uri" },
+          "source_url": { "type": ["string", "null"], "format": "uri" },
+          "created_at": { "type": "string" },
+          "views": { "type": "integer", "minimum": 0 },
+          "is_multi": { "type": "boolean" },
+          "teams": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/components/schemas/TeamPaste" }
+          }
+        }
+      },
+      "TeamInPaste": {
+        "type": "object",
+        "required": ["paste_slug", "slug", "format", "name", "paste", "url", "image"],
+        "properties": {
+          "paste_slug": { "type": "string", "description": "The parent multi-team paste's public slug." },
+          "slug": { "type": "string", "description": "The selected team's slug within the parent paste." },
+          "format": { "type": "string" },
+          "name": { "type": "string" },
+          "paste": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "image": { "type": "string", "format": "uri" }
+        }
+      },
+      "CreateTeamRequest": {
+        "type": "object",
+        "required": ["teams"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Optional team name. Values longer than 100 characters are truncated."
+          },
+          "author": {
+            "type": "string",
+            "description": "Optional author. Values longer than 50 characters are truncated."
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description. The trimmed value is truncated to 1,000 characters."
+          },
+          "public": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether the team may appear in the public gallery."
+          },
+          "teams": {
+            "type": "array",
+            "minItems": 1,
+            "description": "One or more teams. The combined normalized Showdown export must not exceed 500,000 characters.",
+            "items": {
+              "type": "object",
+              "required": ["paste"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Optional team name. Values longer than 100 characters are truncated."
+                },
+                "format": {
+                  "type": "string",
+                  "description": "A supported Pokemon Showdown format ID or name. The server normalizes names to IDs."
+                },
+                "paste": { "type": "string", "minLength": 1, "maxLength": 500000 }
+              }
+            }
+          }
+        }
+      },
+      "CreatedTeam": {
+        "type": "object",
+        "required": ["slug", "url", "image"],
+        "properties": {
+          "slug": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "image": { "type": "string", "format": "uri" },
+          "management_token": { "type": "string", "minLength": 48, "maxLength": 48, "description": "Private creator capability returned by POST /api/team. Store it securely to change visibility later; do not include it in shared team URLs." }
+        }
+      },
+      "GeneratedTeam": {
+        "type": "object",
+        "required": ["teamText", "statsDate", "cardsHtml"],
+        "properties": {
+          "teamText": { "type": "string" },
+          "statsDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$" },
+          "cardsHtml": { "type": "string" }
+        }
+      },
+      "SampleTeam": {
+        "type": "object",
+        "required": ["slug", "name", "author", "tier", "views", "created_at", "url", "image", "source_url"],
+        "properties": {
+          "slug": { "type": "string" },
+          "name": { "type": ["string", "null"] },
+          "author": { "type": ["string", "null"] },
+          "tier": { "type": ["string", "null"] },
+          "views": { "type": "integer", "minimum": 0 },
+          "created_at": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "image": { "type": "string", "format": "uri" },
+          "source_url": { "type": ["string", "null"], "format": "uri" }
+        }
+      },
+      "CurrentUser": {
+        "type": "object",
+        "required": ["username", "email", "ps_username", "team_count", "favorite_count"],
+        "properties": {
+          "username": { "type": "string" },
+          "email": { "type": ["string", "null"], "format": "email" },
+          "ps_username": { "type": ["string", "null"] },
+          "team_count": { "type": "integer", "minimum": 0 },
+          "favorite_count": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

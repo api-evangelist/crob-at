@@ -1,0 +1,39 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the crob.at REST API
+  version: 1.0.0
+  x-generated: '2026-09-03'
+  x-method: generated
+  x-source: openapi/crob-at-openapi.json
+extends: crob-at-openapi.json
+actions:
+  - target: $.info
+    description: Link the catalog artifacts that document runtime semantics the spec does not carry.
+    update:
+      x-artifacts:
+        conventions: ../conventions/crob-at-conventions.yml
+        errors: ../errors/crob-at-problem-types.yml
+        rateLimits: ../rate-limits/crob-at-rate-limits.yml
+        authentication: ../authentication/crob-at-authentication.yml
+        agenticAccess: ../agentic-access/crob-at-agentic-access.yml
+  - target: $.paths['/api/random-team/{format}/save'].post
+    description: Surface the idempotency mechanism as a machine-readable flag.
+    update:
+      x-idempotency:
+        supported: true
+        mechanism: idempotencyKey request-body field
+  - target: $.paths['/api/team'].post
+    description: Flag the absence of replay protection on team creation.
+    update:
+      x-idempotency:
+        supported: false
+        note: A retried request can create a duplicate team page.
+  - target: $.paths['/api/team'].post
+    update:
+      x-rate-limit: 500 requests per hour per client
+  - target: $.paths['/api/random-team/{format}/save'].post
+    update:
+      x-rate-limit: 30 requests per hour per client
+  - target: $.paths['/api/feedback'].post
+    update:
+      x-rate-limit: 5 requests per hour per client

@@ -1,0 +1,57 @@
+generated: '2026-09-03'
+method: derived
+source: openapi/crob-at-openapi.json + https://crob.at/api
+format: custom
+description: >-
+  Error catalog derived from the 4xx/5xx responses declared in crob.at's own
+  OpenAPI 3.1 document and the error notes on the API docs page. The envelope is
+  a small custom JSON object, not RFC 9457 problem+json.
+envelope:
+  content_type: application/json
+  schema:
+    error: string (required) — short machine-readable error identifier
+    message: string (optional) — human-readable detail
+    retryAfter: integer (optional, seconds) — present on rate-limit errors
+problem_types:
+  - status: 400
+    name: BadRequest
+    title: The request body or route parameter is invalid
+    remediation: >-
+      Send valid JSON; teams must be in Pokemon Showdown export format; format/tier
+      identifiers must be lowercase alphanumeric (e.g. gen9ou); feedback messages
+      must be non-empty and at most 2,000 characters; team text at most 500,000
+      characters.
+    operations: [createTeam, generateRandomTeam, saveRandomTeam, listSampleTeams, sendFeedback, createShowdownAssertion]
+  - status: 401
+    name: Unauthorized
+    title: A linked Pokemon Showdown login is required
+    remediation: Sign in at https://crob.at/login and link a Showdown account before calling the assertion helper.
+    operations: [createShowdownAssertion]
+  - status: 404
+    name: NotFound
+    title: The requested resource was not found
+    remediation: Check the team slug (and child teamSlug for multi-team pastes) or the format identifier.
+    operations: [getTeamBySlug, getTeamInPasteBySlug, generateRandomTeam]
+  - status: 429
+    name: RateLimited
+    title: The per-client write limit was exceeded
+    remediation: >-
+      Honor Retry-After (seconds). Write endpoints also return X-RateLimit-Limit,
+      X-RateLimit-Remaining and X-RateLimit-Reset (ISO 8601). Limits: 500 team
+      creations/hour, 30 generated-team saves/hour, 5 feedback messages/hour.
+    operations: [createTeam, saveRandomTeam, sendFeedback]
+  - status: 500
+    name: ServerError
+    title: The request could not be completed because of a server error
+    remediation: Retry later; for saves reuse the same idempotencyKey so a retry cannot double-save.
+    operations: [createTeam, saveRandomTeam, sendFeedback]
+  - status: 502
+    name: UpstreamUnavailable
+    title: The upstream usage-data source could not be read
+    remediation: Retry later; random-team generation depends on Smogon usage statistics.
+    operations: [generateRandomTeam]
+  - status: 503
+    name: ShowdownOAuthUnavailable
+    title: Pokemon Showdown OAuth is unavailable
+    remediation: Retry the assertion flow later.
+    operations: [createShowdownAssertion]

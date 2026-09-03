@@ -1,7 +1,9 @@
 name: crob.at
 description: >-
-  Free, no-login web tool for sharing Pokémon Showdown teams as visual pages, with a public REST API for
-  creating/retrieving teams, generating random teams, and fetching sample teams.
+  Free, no-login web tool for sharing Pokémon Showdown teams as visual pages, with an anonymous keyless
+  public REST API for creating and retrieving team links, generating usage-weighted random teams, and
+  fetching Smogon sample teams and Pokémon type reference data. Publishes an OpenAPI 3.1 contract,
+  APIs.json, an RFC 9727 api-catalog, llms.txt, and markdown twins of every team page for AI agents.
 url: https://raw.githubusercontent.com/api-evangelist/crob-at/refs/heads/main/apis.yml
 deliveryModel:
   model: unknown
@@ -15,7 +17,7 @@ deliveryModel:
   generated: '2026-08-28'
   method: derived
 created: '2026-07-20'
-modified: '2026-07-20'
+modified: '2026-09-03'
 specificationVersion: '0.23'
 tags:
   - Gaming
@@ -45,13 +47,80 @@ apis:
     properties:
       - type: Documentation
         url: https://crob.at/api
-      - type: LLMSTxt
+      - type: APIReference
+        url: https://crob.at/api
+      - type: OpenAPI
+        url: openapi/crob-at-openapi.json
+      - type: LLMsTxt
         url: https://crob.at/llms.txt
 maintainers:
   - FN: crob.at
+    email: admin@crob.at
     url: https://crob.at
 generated:
   by: apis.io/add
   model: claude-opus-4-8
   confidence: 88
   at: '2026-07-20T19:51:54.793Z'
+common:
+- type: DomainSecurity
+  url: security/crob-at-domain-security.yml
+- type: Authentication
+  url: authentication/crob-at-authentication.yml
+- type: Website
+  url: https://crob.at
+- type: Portal
+  url: https://crob.at/api
+- type: TermsOfService
+  url: https://crob.at/api#terms
+- type: PrivacyPolicy
+  url: https://crob.at/privacy
+- type: Support
+  url: https://crob.at/contact
+- type: SignUp
+  url: https://crob.at/signup
+- type: Pricing
+  url: https://crob.at/api#plans
+- type: Plans
+  url: plans/crob-at-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/crob-at-rate-limits.yml
+- type: Security
+  url: https://crob.at/api#security
+- type: VulnerabilityDisclosure
+  url: security/crob-at-vulnerability-disclosure.yml
+- type: WellKnown
+  url: well-known/crob-at-well-known.yml
+- type: APICatalog
+  url: well-known/crob-at-api-catalog.json
+- type: APIOnboarding
+  url: well-known/crob-at-api-onboarding.json
+- type: ContentSignal
+  url: well-known/crob-at-robots.txt
+- type: LLMsTxt
+  url: llms/crob-at-llms.txt
+- type: SpectralRules
+  url: rules/crob-at-spectral.yaml
+- type: Conventions
+  url: conventions/crob-at-conventions.yml
+- type: Idempotency
+  url: conventions/crob-at-conventions.yml
+- type: ErrorCatalog
+  url: errors/crob-at-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/crob-at-lifecycle.yml
+- type: Conformance
+  url: conformance/crob-at-conformance.yml
+- type: DataModel
+  url: data-model/crob-at-data-model.yml
+- type: Overlay
+  url: overlays/crob-at-rest-api-overlay.yaml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: AgenticAccess
+  url: agentic-access/crob-at-agentic-access.yml
+x-enrichment:
+  date: '2026-09-03'
+  status: enriched
+  artifacts_added: 26
+  pass: local-v2

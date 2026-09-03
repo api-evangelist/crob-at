@@ -1,0 +1,36 @@
+generated: '2026-09-03'
+method: searched
+source: https://crob.at/api#rate-limits
+description: >-
+  Published per-client write limits from the crob.at API docs. Reads and
+  random-team generation carry no documented limit. Limited responses use HTTP
+  429 with Retry-After; write endpoints also expose X-RateLimit-* headers, and
+  the OpenAPI declares them on the 429 responses.
+limit_count: 3
+limits:
+  - scope: per-client
+    endpoint: POST /api/team
+    operation: createTeam
+    window: 1 hour
+    limit: 500
+  - scope: per-client
+    endpoint: POST /api/random-team/{format}/save
+    operation: saveRandomTeam
+    window: 1 hour
+    limit: 30
+  - scope: per-client
+    endpoint: POST /api/feedback
+    operation: sendFeedback
+    window: 1 hour
+    limit: 5
+signaling:
+  status_on_exhaustion: 429
+  headers:
+    - name: Retry-After
+      description: Seconds until the request may be retried (also echoed as retryAfter in the JSON error body)
+    - name: X-RateLimit-Limit
+      description: Requests permitted in the current window
+    - name: X-RateLimit-Remaining
+      description: Requests remaining in the current window
+    - name: X-RateLimit-Reset
+      description: ISO 8601 timestamp when the window resets

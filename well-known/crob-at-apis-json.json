@@ -1,0 +1,129 @@
+{
+  "aid": "crob.at:api-index",
+  "name": "crob.at APIs",
+  "description": "Public APIs for creating, retrieving, and generating competitive Pokemon Showdown teams and reading supporting reference data.",
+  "url": "https://crob.at/.well-known/apis.json",
+  "created": "2026-07-20",
+  "modified": "2026-07-20",
+  "specificationVersion": "0.21",
+  "type": "Index",
+  "kind": "company",
+  "tags": [
+    "pokemon",
+    "pokemon-showdown",
+    "teams",
+    "competitive-gaming"
+  ],
+  "maintainers": [
+    {
+      "FN": "crob.at",
+      "email": "admin@crob.at",
+      "url": "https://crob.at/contact"
+    }
+  ],
+  "common": [
+    {
+      "type": "Website",
+      "url": "https://crob.at"
+    },
+    {
+      "type": "Portal",
+      "url": "https://crob.at/api"
+    },
+    {
+      "type": "APIOnboarding",
+      "url": "https://crob.at/.well-known/api-onboarding"
+    },
+    {
+      "type": "Plans",
+      "url": "https://crob.at/.well-known/api-onboarding"
+    },
+    {
+      "type": "TermsOfService",
+      "url": "https://crob.at/api#terms"
+    },
+    {
+      "type": "PrivacyPolicy",
+      "url": "https://crob.at/privacy"
+    },
+    {
+      "type": "Security",
+      "url": "https://crob.at/api#security"
+    },
+    {
+      "type": "RateLimits",
+      "url": "https://crob.at/api#rate-limits"
+    },
+    {
+      "type": "ChangeLog",
+      "url": "https://github.com/singiamtel/crob.at/commits/main"
+    },
+    {
+      "type": "StatusPage",
+      "url": "https://crob.at"
+    },
+    {
+      "type": "Support",
+      "url": "https://crob.at/contact"
+    }
+  ],
+  "rules": [
+    {
+      "type": "SpectralRules",
+      "name": "crob.at OpenAPI governance rules",
+      "url": "https://crob.at/spectral.yaml"
+    }
+  ],
+  "apis": [
+    {
+      "aid": "crob.at:rest-api",
+      "name": "crob.at REST API",
+      "description": "Create and retrieve shareable Pokemon Showdown teams, generate competitive random teams, read sample and type data, and use optional session-aware helpers.",
+      "humanURL": "https://crob.at/api",
+      "baseURL": "https://crob.at/api",
+      "version": "1.0.0",
+      "tags": [
+        "pokemon-showdown",
+        "team-sharing",
+        "team-generation",
+        "reference-data"
+      ],
+      "properties": [
+        {
+          "type": "OpenAPI",
+          "url": "https://crob.at/openapi.json"
+        },
+        {
+          "type": "Documentation",
+          "url": "https://crob.at/api"
+        },
+        {
+          "type": "APIReference",
+          "url": "https://crob.at/api"
+        },
+        {
+          "type": "Pricing",
+          "url": "https://crob.at/.well-known/api-onboarding"
+        },
+        {
+          "type": "TermsOfService",
+          "url": "https://crob.at/api#terms"
+        },
+        {
+          "type": "Security",
+          "url": "https://crob.at/api#security"
+        },
+        {
+          "type": "RateLimits",
+          "url": "https://crob.at/api#rate-limits"
+        }
+      ],
+      "rules": [
+        {
+          "type": "SpectralRules",
+          "url": "https://crob.at/spectral.yaml"
+        }
+      ]
+    }
+  ]
+}

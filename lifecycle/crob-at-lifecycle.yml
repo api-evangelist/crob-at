@@ -1,0 +1,21 @@
+generated: '2026-09-03'
+method: searched
+source: https://crob.at/api#terms + openapi/crob-at-openapi.json
+description: >-
+  Lifecycle posture read from the API terms. The documented endpoints are named
+  the supported public compatibility contract; the API is provided as available
+  without a service-level guarantee and may evolve, with material contract
+  changes reflected in the OpenAPI document and repository history. No status
+  page, no dated deprecation policy, and no deprecated operations in the spec.
+versioning:
+  scheme: unversioned URLs, OpenAPI info.version 1.0.0
+  change_communication: OpenAPI document + repository history
+sla: none — provided "as available" without a service-level guarantee
+status_page: none published (the provider's own apis.json points StatusPage at the homepage, which is not a status page)
+deprecation_policy: none published
+deprecated_operations: []
+notes: >-
+  The provider's apis.json ChangeLog pointer
+  (https://github.com/singiamtel/crob.at/commits/main) returned HTTP 404 on
+  2026-09-03 — the repository is private or renamed, so no ChangeLog pointer is
+  emitted here.

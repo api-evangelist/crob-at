@@ -1,0 +1,19 @@
+generated: '2026-09-03'
+method: searched
+source: https://crob.at/api#plans
+description: >-
+  crob.at publishes a single free tier. All documented API operations are free;
+  public endpoints require no account, API key, payment method, or paid plan.
+  The APIs Onboarding document (/.well-known/api-onboarding) states the same in
+  machine-readable form. Rate limits are the only usage bound.
+plan_count: 1
+plans:
+  - name: Free
+    price: 0
+    currency: USD
+    billing_period: none
+    included: >-
+      All documented API operations. Team creation limited to 500/hour,
+      generated-team saves to 30/hour, feedback to 5/hour, per client.
+    overage: none — requests over the limit return 429 with Retry-After
+    signup_required: false

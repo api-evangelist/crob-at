@@ -1,0 +1,51 @@
+generated: '2026-09-03'
+method: probed
+description: >-
+  Results of probing the /.well-known/ discovery surface on https://crob.at, the
+  only host apis.yml and the OpenAPI servers[] name. crob.at serves a real RFC
+  9727 api-catalog linkset, an APIs.json index (also aliased at /apis.json), and
+  an APIs Onboarding (aod 0.1) document; robots.txt carries a Content-Signal
+  line (search=yes, ai-train=no, ai-input=yes). 404 paths return the site's
+  HTML shell with a real 404 status code. Agent-card probes (both the canonical
+  and legacy paths) missed, so no AgentCard pointer is emitted.
+hosts:
+  - host: https://crob.at
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 200
+        type: 'application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"'
+        file: crob-at-api-catalog.json
+      - path: /.well-known/apis.json
+        status: 200
+        type: application/json
+        file: crob-at-apis-json.json
+      - path: /apis.json
+        status: 200
+        type: application/json
+        note: alias of /.well-known/apis.json, same 3,090-byte document
+      - path: /.well-known/api-onboarding
+        status: 200
+        type: application/json
+        file: crob-at-api-onboarding.json
+        note: APIs Onboarding aod 0.1 document, linked describedby from the api-catalog linkset
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /robots.txt
+        status: 200
+        type: text/plain
+        file: crob-at-robots.txt
+        note: 'carries "Content-Signal: search=yes, ai-train=no, ai-input=yes" and explicit AI-crawler allowances'

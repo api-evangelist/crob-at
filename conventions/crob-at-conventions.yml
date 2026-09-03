@@ -1,0 +1,76 @@
+generated: '2026-09-03'
+method: searched
+source: https://crob.at/api + openapi/crob-at-openapi.json
+description: >-
+  Cross-cutting runtime semantics of the crob.at REST API, read from the API
+  docs page and the provider's own OpenAPI 3.1 document. A small anonymous
+  keyless JSON API: no pagination, no field expansion, no request-id tracing,
+  with idempotency scoped to one operation.
+base_url: https://crob.at
+api_style: REST over HTTPS, JSON requests and responses
+
+authentication:
+  scheme: none for public endpoints; optional same-origin session cookie (name "session") for account helpers
+  docs: https://crob.at/api#security
+  detail: authentication/crob-at-authentication.yml
+
+idempotency:
+  coverage: partial
+  scope:
+    - saveRandomTeam
+  mechanism: >-
+    idempotencyKey request-body field on POST /api/random-team/{format}/save
+    (16-64 chars, [A-Za-z0-9_-]). A retry with the same key returns 200 with the
+    already-saved team instead of creating a duplicate; first save returns 201.
+  not_covered: >-
+    createTeam (POST /api/team) and sendFeedback (POST /api/feedback) document
+    no replay-protection mechanism; a retried createTeam can create a duplicate
+    team page.
+  docs: https://crob.at/api
+
+reversibility:
+  state: none
+  detail: >-
+    The API exposes no delete, cancel, undo, or restore operation for any write.
+    A created team page (createTeam, saveRandomTeam) is a permanent public or
+    unlisted URL with no documented API path or window for removal, and feedback
+    cannot be recalled. Nothing here is financially consequential, but agents
+    should treat team creation as irreversible from the API surface.
+  operations: []
+
+pagination:
+  style: none
+  detail: List responses (listSampleTeams, getTypeChartData) return complete arrays with no paging parameters.
+
+versioning:
+  scheme: unversioned paths; OpenAPI info.version 1.0.0
+  policy: >-
+    The docs call the documented endpoints "the supported public compatibility
+    contract"; material contract changes are reflected in the OpenAPI document
+    and repository history.
+
+error_envelope:
+  content_type: application/json
+  shape: '{error: string, message?: string, retryAfter?: integer}'
+  detail: errors/crob-at-problem-types.yml
+
+rate_limit_signaling:
+  status: 429
+  headers: [Retry-After, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset]
+  detail: rate-limits/crob-at-rate-limits.yml
+
+cors:
+  detail: >-
+    All public endpoints (/api/team*, /api/random-team*, /api/samples/*,
+    /api/type-chart-data, /api/feedback) allow cross-origin requests; /api/me
+    and /api/showdown/assertion are same-origin session helpers.
+
+caching:
+  detail: >-
+    GET team responses carry Cache-Control; sample teams are cached one hour and
+    type-chart data 24 hours server-side.
+
+content_negotiation:
+  detail: >-
+    Team pages ship markdown twins for agents — append .md to any team URL or
+    send Accept: text/markdown (verified 200 text/markdown on a live team page).

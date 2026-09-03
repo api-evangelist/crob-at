@@ -1,0 +1,48 @@
+generated: '2026-09-03'
+method: derived
+source: openapi/crob-at-openapi.json components.schemas
+description: >-
+  Entity graph derived from the OpenAPI schemas. Small model centered on the
+  team paste: a TeamPaste (public slug) holds one or more teams; sample teams
+  and generated teams are sibling representations of the same Showdown-export
+  payload.
+entities:
+  - name: TeamPaste
+    id_field: slug
+    description: A saved single- or multi-team paste with a public slug, OG image, views, author and description.
+  - name: Team
+    description: The full saved-team representation returned by getTeamBySlug (TeamPaste plus teams[]).
+  - name: TeamInPaste
+    id_field: slug (child, within paste_slug)
+    description: One named team inside a multi-team paste, addressed as /{slug}/{teamSlug}.
+  - name: CreatedTeam
+    description: 'Creation receipt: slug, url, image.'
+  - name: GeneratedTeam
+    description: An unsaved random team — teamText (Showdown export), statsDate, cardsHtml.
+  - name: SampleTeam
+    id_field: slug
+    description: A Smogon sample team for a tier, with source_url back to the Smogon thread.
+  - name: CurrentUser
+    id_field: username
+    description: The session user, with linked ps_username, team_count and favorite_count.
+relationships:
+  - from: TeamPaste
+    to: TeamInPaste
+    type: has_many
+    via: teams[]
+  - from: TeamInPaste
+    to: TeamPaste
+    type: belongs_to
+    via: paste_slug
+  - from: CurrentUser
+    to: TeamPaste
+    type: has_many
+    via: team_count (counts only; no listing endpoint is public)
+  - from: SampleTeam
+    to: TeamPaste
+    type: is_a
+    via: slug — sample teams are saved pastes curated from Smogon threads
+  - from: GeneratedTeam
+    to: CreatedTeam
+    type: becomes
+    via: saveRandomTeam(teamText)

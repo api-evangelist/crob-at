@@ -1,0 +1,20 @@
+generated: '2026-09-03'
+method: generated
+source: >-
+  Packaged Agent Skills generated from crob.at's own OpenAPI 3.1 document
+  (openapi/crob-at-openapi.json) and API docs (https://crob.at/api). Every step
+  is grounded in an operationId verified verbatim in the spec; cross-cutting
+  rules cite ../conventions/, ../errors/ and ../rate-limits/.
+skills:
+  - file: crob-at-share-showdown-team.md
+    name: Share a Pokemon Showdown team as a visual page
+    api: openapi/crob-at-openapi.json
+    operations: [createTeam, getTeamBySlug, getTeamInPasteBySlug]
+  - file: crob-at-generate-random-team.md
+    name: Generate and save a random competitive team
+    api: openapi/crob-at-openapi.json
+    operations: [generateRandomTeam, saveRandomTeam]
+  - file: crob-at-lookup-reference-data.md
+    name: Look up sample teams and type data
+    api: openapi/crob-at-openapi.json
+    operations: [listSampleTeams, getTypeChartData]

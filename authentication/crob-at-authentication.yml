@@ -1,0 +1,35 @@
+generated: '2026-09-03'
+method: searched
+source: openapi/crob-at-openapi.json + https://crob.at/api#security + https://crob.at/.well-known/api-onboarding
+docs: https://crob.at/api#security
+summary:
+  types:
+  - none
+  - apiKey
+  api_key_in:
+  - cookie
+description: >-
+  Public endpoints are anonymous and keyless — the OpenAPI declares top-level
+  security [] and the docs state no account, API key, or payment method is
+  required. Two same-origin helper endpoints (getCurrentUser,
+  createShowdownAssertion) use the crob.at browser session cookie; the
+  onboarding document is explicit that the session cookie is for same-origin
+  browser flows and is not an API key, and the docs warn never to send it to
+  another origin or embed it in client code.
+schemes:
+- name: public
+  type: none
+  description: No authentication required for public team, generation, reference and feedback endpoints.
+  sources:
+  - https://crob.at/.well-known/api-onboarding
+- name: cookieSession
+  type: apiKey
+  in: cookie
+  parameter: session
+  description: >-
+    Optional crob.at browser session cookie for account helpers (/api/me,
+    /api/showdown/assertion). Bootstrap by signing in at https://crob.at/login;
+    acts only on the signed-in account.
+  sources:
+  - openapi/crob-at-openapi.json
+  - https://crob.at/.well-known/api-onboarding

@@ -1,0 +1,14 @@
+generated: '2026-09-03'
+method: searched
+source: >-
+  registry.npmjs.org search "crob.at" (0 results), pypi.org/pypi/crobat/json
+  (exists but is an unrelated third-party subdomain-scanner tool, not a crob.at
+  client), and the crob.at API docs, which document raw cURL/JavaScript/Python
+  HTTP calls only and name no client library.
+description: >-
+  crob.at publishes no first-party SDKs or client packages on any registry
+  checked. The API is anonymous and keyless, and the docs show direct HTTP
+  examples in cURL, fetch, and requests instead of a client library. An honest
+  empty result, not an unchecked one.
+package_count: 0
+packages: []

@@ -1,0 +1,82 @@
+generated: '2026-09-03'
+method: generated
+source: openapi/crob-at-openapi.json + https://crob.at/robots.txt + https://crob.at/llms.txt
+description: >-
+  Recommended x-agentic-access execution contracts, classified from the OpenAPI.
+  crob.at is unusually agent-friendly for its size: anonymous keyless API, an
+  llms.txt that explicitly addresses agents, markdown twins of every team page
+  (append .md or send Accept: text/markdown — verified live), robots.txt
+  Content-Signal (search=yes, ai-train=no, ai-input=yes) with named AI crawlers
+  allowed, and a stated agentPolicy of "allowed" in its APIs Onboarding
+  document. Review and bind audience per deployment.
+provider_signals:
+  agent_policy: allowed (declared in /.well-known/api-onboarding account.agentPolicy)
+  content_signal: 'search=yes, ai-train=no, ai-input=yes'
+  markdown_twins: append .md to any team URL or send Accept text/markdown (probed 200 text/markdown)
+  llms_txt: https://crob.at/llms.txt
+summary:
+  operations: 10
+  by_action_class:
+    connected: 8
+    acting: 2
+  by_consequence:
+    read: 6
+    write: 4
+  human_in_the_loop_required: 0
+operations:
+  - path: /api/team/{slug}
+    method: get
+    operationId: getTeamBySlug
+    x-agentic-access: {action-class: connected, consequence: read, subject: none}
+  - path: /api/team/{slug}/{teamSlug}
+    method: get
+    operationId: getTeamInPasteBySlug
+    x-agentic-access: {action-class: connected, consequence: read, subject: none}
+  - path: /api/team
+    method: post
+    operationId: createTeam
+    x-agentic-access:
+      action-class: connected
+      consequence: write
+      subject: none
+      note: Creates a permanent public/unlisted page with no API reversal path; rate-limited 500/hour.
+  - path: /api/random-team/{format}
+    method: get
+    operationId: generateRandomTeam
+    x-agentic-access: {action-class: connected, consequence: read, subject: none}
+  - path: /api/random-team/{format}/save
+    method: post
+    operationId: saveRandomTeam
+    x-agentic-access:
+      action-class: connected
+      consequence: write
+      subject: none
+      note: Idempotent via idempotencyKey; creates a permanent unlisted URL; rate-limited 30/hour.
+  - path: /api/samples/{tier}
+    method: get
+    operationId: listSampleTeams
+    x-agentic-access: {action-class: connected, consequence: read, subject: none}
+  - path: /api/type-chart-data
+    method: get
+    operationId: getTypeChartData
+    x-agentic-access: {action-class: connected, consequence: read, subject: none}
+  - path: /api/me
+    method: get
+    operationId: getCurrentUser
+    x-agentic-access: {action-class: acting, consequence: read, subject: session-user}
+  - path: /api/feedback
+    method: post
+    operationId: sendFeedback
+    x-agentic-access:
+      action-class: connected
+      consequence: write
+      subject: none
+      note: Cannot be recalled; rate-limited 5/hour — agents should not use it for automated traffic.
+  - path: /api/showdown/assertion
+    method: post
+    operationId: createShowdownAssertion
+    x-agentic-access:
+      action-class: acting
+      consequence: write
+      subject: session-user
+      note: Auth broker for Pokemon Showdown login; same-origin session only — not an agent surface.

@@ -1,0 +1,54 @@
+generated: '2026-09-03'
+method: searched
+source: live probes of https://crob.at discovery documents + openapi/crob-at-openapi.json
+description: >-
+  Standards the crob.at surface demonstrably conforms to, each with the probed
+  evidence. Notable for a hobby-scale provider: RFC 9727 api-catalog, APIs.json
+  0.21, APIs Onboarding 0.1, llms.txt, Content-Signal, and published Spectral
+  governance rules. No certification/compliance program is published, so no
+  Compliance pointer is emitted.
+conformance:
+  - id: openapi-3.1
+    conforms: true
+    evidence: https://crob.at/openapi.json — parses as OpenAPI 3.1.0, 10 operations, full operationIds/tags/responses
+  - id: rfc9727-api-catalog
+    conforms: true
+    evidence: >-
+      https://crob.at/.well-known/api-catalog — 200 with content type
+      application/linkset+json and the RFC 9727 profile, linking service-desc,
+      service-doc and per-endpoint anchors
+  - id: apis-json
+    conforms: true
+    evidence: https://crob.at/.well-known/apis.json — 200, specificationVersion 0.21, aliased at /apis.json
+  - id: api-onboarding-0.1
+    conforms: true
+    evidence: https://crob.at/.well-known/api-onboarding — 200, $schema apionboarding.org 0.1, declares maturity/plans/auth
+  - id: llms-txt
+    conforms: true
+    evidence: https://crob.at/llms.txt — 200 text/plain, llms.txt format
+  - id: content-signal
+    conforms: true
+    evidence: 'https://crob.at/robots.txt — "Content-Signal: search=yes, ai-train=no, ai-input=yes"'
+  - id: spectral-governance
+    conforms: true
+    evidence: https://crob.at/spectral.yaml — published OpenAPI governance ruleset extending spectral:oas
+  - id: idempotency
+    conforms: partial
+    evidence: idempotencyKey documented on saveRandomTeam only; see conventions/crob-at-conventions.yml
+  - id: rfc9457
+    conforms: false
+    evidence: error envelope is a custom {error, message, retryAfter} JSON object, not application/problem+json
+  - id: oauth2
+    conforms: false
+    evidence: no OAuth surface of its own; the Showdown assertion helper brokers Pokemon Showdown's OAuth, not crob.at's
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: https://crob.at/.well-known/security.txt — 404 (disclosure channel is prose at https://crob.at/api#security)
+domain_standards:
+  - id: pokemon-showdown-export
+    conforms: true
+    note: >-
+      Teams are exchanged in the Pokemon Showdown teambuilder export format —
+      the de facto interchange format of this market (declared in the
+      CreateTeamRequest schema and the docs). Recorded as context; not an SDO
+      standard.
