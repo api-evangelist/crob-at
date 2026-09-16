@@ -29,30 +29,86 @@ tags:
   - Developer Tools
   - REST API
 apis:
-  - name: crob.at REST API
-    description: >-
-      Public REST API to create and retrieve Pokémon Showdown team links, generate random teams, and access sample teams
-      and authenticated Showdown helpers.
-    humanURL: https://crob.at/api
-    baseURL: https://crob.at
-    tags:
-      - Gaming
-      - Esports
-      - Pokemon
-      - Pokemon Showdown
-      - Team Building
-      - Content Rendering
-      - Developer Tools
-      - REST API
-    properties:
-      - type: Documentation
-        url: https://crob.at/api
-      - type: APIReference
-        url: https://crob.at/api
-      - type: OpenAPI
-        url: openapi/crob-at-openapi.json
-      - type: LLMsTxt
-        url: https://crob.at/llms.txt
+- aid: crob-at:crob-at-account-api
+  name: crob.at Account API
+  description: Optional same-origin helpers that use a crob.at browser session.
+  humanURL: https://crob.at/api
+  baseURL: https://crob.at
+  tags:
+  - Account
+  properties:
+  - type: OpenAPI
+    url: openapi/crob-at-account-api-openapi.yml
+  - type: Documentation
+    url: https://crob.at/api
+  - type: APIReference
+    url: https://crob.at/api
+  - type: LLMsTxt
+    url: https://crob.at/llms.txt
+- aid: crob-at:crob-at-feedback-api
+  name: crob.at Feedback API
+  description: Send product feedback to the crob.at team.
+  humanURL: https://crob.at/api
+  baseURL: https://crob.at
+  tags:
+  - Feedback
+  properties:
+  - type: OpenAPI
+    url: openapi/crob-at-feedback-api-openapi.yml
+  - type: Documentation
+    url: https://crob.at/api
+  - type: APIReference
+    url: https://crob.at/api
+  - type: LLMsTxt
+    url: https://crob.at/llms.txt
+- aid: crob-at:crob-at-generation-api
+  name: crob.at Generation API
+  description: Generate and optionally save competitive random teams.
+  humanURL: https://crob.at/api
+  baseURL: https://crob.at
+  tags:
+  - Generation
+  properties:
+  - type: OpenAPI
+    url: openapi/crob-at-generation-api-openapi.yml
+  - type: Documentation
+    url: https://crob.at/api
+  - type: APIReference
+    url: https://crob.at/api
+  - type: LLMsTxt
+    url: https://crob.at/llms.txt
+- aid: crob-at:crob-at-reference-api
+  name: crob.at Reference API
+  description: Read sample teams and Pokemon reference data.
+  humanURL: https://crob.at/api
+  baseURL: https://crob.at
+  tags:
+  - Reference
+  properties:
+  - type: OpenAPI
+    url: openapi/crob-at-reference-api-openapi.yml
+  - type: Documentation
+    url: https://crob.at/api
+  - type: APIReference
+    url: https://crob.at/api
+  - type: LLMsTxt
+    url: https://crob.at/llms.txt
+- aid: crob-at:crob-at-teams-api
+  name: crob.at Teams API
+  description: Create and retrieve shareable Pokemon Showdown teams.
+  humanURL: https://crob.at/api
+  baseURL: https://crob.at
+  tags:
+  - Teams
+  properties:
+  - type: OpenAPI
+    url: openapi/crob-at-teams-api-openapi.yml
+  - type: Documentation
+    url: https://crob.at/api
+  - type: APIReference
+    url: https://crob.at/api
+  - type: LLMsTxt
+    url: https://crob.at/llms.txt
 maintainers:
   - FN: crob.at
     email: admin@crob.at
