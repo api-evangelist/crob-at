@@ -99,6 +99,8 @@ apis:
   humanURL: https://crob.at/api
   baseURL: https://crob.at
   tags:
+  - Team
+  tags_raw:
   - Teams
   properties:
   - type: OpenAPI
