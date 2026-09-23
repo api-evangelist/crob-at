@@ -1,0 +1,329 @@
+openapi: 3.2.0
+info:
+  title: crob.at Teams API
+  version: 1.0.0
+  description: Create, retrieve, and generate competitive Pokemon Showdown teams, read reference data, and use optional crob.at session helpers.
+  termsOfService: https://crob.at/api#terms
+  contact:
+    name: crob.at API support
+    url: https://crob.at/contact
+    email: admin@crob.at
+servers:
+- url: https://crob.at
+  description: Production
+security: []
+tags:
+- name: Teams
+  description: Create and retrieve shareable Pokemon Showdown teams.
+paths:
+  /api/team/{slug}:
+    get:
+      tags:
+      - Teams
+      summary: Retrieve a team
+      description: Returns a saved single-team or multi-team paste by its public slug.
+      operationId: getTeamBySlug
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: The team's public slug.
+        schema:
+          type: string
+          minLength: 1
+      responses:
+        '200':
+          description: The saved team.
+          headers:
+            Cache-Control:
+              description: Public response cache policy.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/team/{slug}/{teamSlug}:
+    get:
+      tags:
+      - Teams
+      summary: Retrieve one team from a multi-team paste
+      description: Returns one named team from a saved multi-team paste. Use the child slug shown in the shared URL or derived from the team name.
+      operationId: getTeamInPasteBySlug
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: The multi-team paste's public slug.
+        schema:
+          type: string
+          minLength: 1
+      - name: teamSlug
+        in: path
+        required: true
+        description: The selected team's slug within the paste.
+        schema:
+          type: string
+          minLength: 1
+      responses:
+        '200':
+          description: The selected team.
+          headers:
+            Cache-Control:
+              description: Public response cache policy.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamInPaste'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/team:
+    post:
+      tags:
+      - Teams
+      summary: Create a team
+      description: Creates a shareable team from one or more Pokemon Showdown exports. No account or API key is required.
+      operationId: createTeam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTeamRequest'
+      responses:
+        '201':
+          description: The team was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedTeam'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    ServerError:
+      description: The request could not be completed because of a server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: The request body or route parameter is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: The per-client write limit was exceeded.
+      headers:
+        Retry-After:
+          description: Seconds until the request may be retried.
+          schema:
+            type: integer
+            minimum: 1
+        X-RateLimit-Limit:
+          description: Requests permitted in the current window.
+          schema:
+            type: integer
+        X-RateLimit-Remaining:
+          description: Requests remaining in the current window.
+          schema:
+            type: integer
+        X-RateLimit-Reset:
+          description: ISO 8601 timestamp when the window resets.
+          schema:
+            type: string
+            format: date-time
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    TeamInPaste:
+      type: object
+      required:
+      - paste_slug
+      - slug
+      - format
+      - name
+      - paste
+      - url
+      - image
+      properties:
+        paste_slug:
+          type: string
+          description: The parent multi-team paste's public slug.
+        slug:
+          type: string
+          description: The selected team's slug within the parent paste.
+        format:
+          type: string
+        name:
+          type: string
+        paste:
+          type: string
+        url:
+          type: string
+          format: uri
+        image:
+          type: string
+          format: uri
+    CreatedTeam:
+      type: object
+      required:
+      - slug
+      - url
+      - image
+      properties:
+        slug:
+          type: string
+        url:
+          type: string
+          format: uri
+        image:
+          type: string
+          format: uri
+        management_token:
+          type: string
+          minLength: 48
+          maxLength: 48
+          description: Private creator capability returned by POST /api/team. Store it securely to change visibility later; do not include it in shared team URLs.
+    TeamPaste:
+      type: object
+      required:
+      - paste
+      properties:
+        format:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        paste:
+          type: string
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        retryAfter:
+          type: integer
+          minimum: 1
+    Team:
+      type: object
+      required:
+      - slug
+      - name
+      - author
+      - description
+      - public
+      - image
+      - source_url
+      - created_at
+      - views
+      - is_multi
+      - teams
+      properties:
+        slug:
+          type: string
+        name:
+          type:
+          - string
+          - 'null'
+        author:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        public:
+          type: boolean
+          description: Whether the team may appear in the public gallery and search.
+        image:
+          type: string
+          format: uri
+        source_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+        created_at:
+          type: string
+        views:
+          type: integer
+          minimum: 0
+        is_multi:
+          type: boolean
+        teams:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/TeamPaste'
+    CreateTeamRequest:
+      type: object
+      required:
+      - teams
+      properties:
+        name:
+          type: string
+          description: Optional team name. Values longer than 100 characters are truncated.
+        author:
+          type: string
+          description: Optional author. Values longer than 50 characters are truncated.
+        description:
+          type: string
+          description: Optional description. The trimmed value is truncated to 1,000 characters.
+        public:
+          type: boolean
+          default: false
+          description: Whether the team may appear in the public gallery.
+        teams:
+          type: array
+          minItems: 1
+          description: One or more teams. The combined normalized Showdown export must not exceed 500,000 characters.
+          items:
+            type: object
+            required:
+            - paste
+            properties:
+              name:
+                type: string
+                description: Optional team name. Values longer than 100 characters are truncated.
+              format:
+                type: string
+                description: A supported Pokemon Showdown format ID or name. The server normalizes names to IDs.
+              paste:
+                type: string
+                minLength: 1
+                maxLength: 500000
+  securitySchemes:
+    cookieSession:
+      type: apiKey
+      in: cookie
+      name: session
+      description: Optional crob.at browser session cookie. Public endpoints do not require it.
+externalDocs:
+  description: Human-readable API documentation
+  url: https://crob.at/api

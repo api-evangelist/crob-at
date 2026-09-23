@@ -1,0 +1,143 @@
+openapi: 3.2.0
+info:
+  title: crob.at Reference API
+  version: 1.0.0
+  description: Create, retrieve, and generate competitive Pokemon Showdown teams, read reference data, and use optional crob.at session helpers.
+  termsOfService: https://crob.at/api#terms
+  contact:
+    name: crob.at API support
+    url: https://crob.at/contact
+    email: admin@crob.at
+servers:
+- url: https://crob.at
+  description: Production
+security: []
+tags:
+- name: Reference
+  description: Read sample teams and Pokemon reference data.
+paths:
+  /api/samples/{tier}:
+    get:
+      tags:
+      - Reference
+      summary: List sample teams
+      description: Returns the available Smogon sample teams for a competitive tier.
+      operationId: listSampleTeams
+      parameters:
+      - name: tier
+        in: path
+        required: true
+        description: An alphanumeric Showdown format identifier, such as gen9ou.
+        schema:
+          type: string
+          pattern: ^[a-z0-9]+$
+      responses:
+        '200':
+          description: Sample teams, or an empty array when none are available.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SampleTeam'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /api/type-chart-data:
+    get:
+      tags:
+      - Reference
+      summary: Read Pokemon type data
+      description: Returns Pokemon names and their types for the interactive type chart.
+      operationId: getTypeChartData
+      responses:
+        '200':
+          description: Pokemon names paired with one or two types.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: array
+                  minItems: 2
+                  maxItems: 2
+                  prefixItems:
+                  - type: string
+                  - type: array
+                    minItems: 1
+                    maxItems: 2
+                    items:
+                      type: string
+                  items: {}
+components:
+  schemas:
+    SampleTeam:
+      type: object
+      required:
+      - slug
+      - name
+      - author
+      - tier
+      - views
+      - created_at
+      - url
+      - image
+      - source_url
+      properties:
+        slug:
+          type: string
+        name:
+          type:
+          - string
+          - 'null'
+        author:
+          type:
+          - string
+          - 'null'
+        tier:
+          type:
+          - string
+          - 'null'
+        views:
+          type: integer
+          minimum: 0
+        created_at:
+          type: string
+        url:
+          type: string
+          format: uri
+        image:
+          type: string
+          format: uri
+        source_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        retryAfter:
+          type: integer
+          minimum: 1
+  responses:
+    BadRequest:
+      description: The request body or route parameter is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    cookieSession:
+      type: apiKey
+      in: cookie
+      name: session
+      description: Optional crob.at browser session cookie. Public endpoints do not require it.
+externalDocs:
+  description: Human-readable API documentation
+  url: https://crob.at/api

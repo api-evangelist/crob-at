@@ -1,0 +1,202 @@
+openapi: 3.2.0
+info:
+  title: crob.at Generation API
+  version: 1.0.0
+  description: Create, retrieve, and generate competitive Pokemon Showdown teams, read reference data, and use optional crob.at session helpers.
+  termsOfService: https://crob.at/api#terms
+  contact:
+    name: crob.at API support
+    url: https://crob.at/contact
+    email: admin@crob.at
+servers:
+- url: https://crob.at
+  description: Production
+security: []
+tags:
+- name: Generation
+  description: Generate and optionally save competitive random teams.
+paths:
+  /api/random-team/{format}:
+    get:
+      tags:
+      - Generation
+      summary: Generate a random team
+      description: Generates a usage-weighted competitive team without saving it.
+      operationId: generateRandomTeam
+      parameters:
+      - $ref: '#/components/parameters/Format'
+      responses:
+        '200':
+          description: A generated Pokemon Showdown team and its rendered card HTML.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneratedTeam'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '502':
+          description: The upstream usage-data source could not be read.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/random-team/{format}/save:
+    post:
+      tags:
+      - Generation
+      summary: Save a generated team
+      description: Creates an unlisted permanent URL for a previously generated team. Reuse one idempotencyKey when a save request is retried.
+      operationId: saveRandomTeam
+      parameters:
+      - $ref: '#/components/parameters/Format'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - teamText
+              properties:
+                teamText:
+                  type: string
+                  minLength: 1
+                  maxLength: 500000
+                  description: A Pokemon Showdown team export returned by the generation endpoint.
+                idempotencyKey:
+                  type: string
+                  minLength: 16
+                  maxLength: 64
+                  pattern: ^[A-Za-z0-9_-]+$
+                  description: A stable retry key. Reuse it only for the same generated team.
+      responses:
+        '201':
+          description: The generated team was saved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedTeam'
+        '200':
+          description: A retry returned the team that was already saved with this idempotency key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedTeam'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    ServerError:
+      description: The request could not be completed because of a server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: The request body or route parameter is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: The per-client write limit was exceeded.
+      headers:
+        Retry-After:
+          description: Seconds until the request may be retried.
+          schema:
+            type: integer
+            minimum: 1
+        X-RateLimit-Limit:
+          description: Requests permitted in the current window.
+          schema:
+            type: integer
+        X-RateLimit-Remaining:
+          description: Requests remaining in the current window.
+          schema:
+            type: integer
+        X-RateLimit-Reset:
+          description: ISO 8601 timestamp when the window resets.
+          schema:
+            type: string
+            format: date-time
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    Format:
+      name: format
+      in: path
+      required: true
+      description: An alphanumeric Showdown format identifier, such as gen9ou.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]+$
+  schemas:
+    CreatedTeam:
+      type: object
+      required:
+      - slug
+      - url
+      - image
+      properties:
+        slug:
+          type: string
+        url:
+          type: string
+          format: uri
+        image:
+          type: string
+          format: uri
+        management_token:
+          type: string
+          minLength: 48
+          maxLength: 48
+          description: Private creator capability returned by POST /api/team. Store it securely to change visibility later; do not include it in shared team URLs.
+    GeneratedTeam:
+      type: object
+      required:
+      - teamText
+      - statsDate
+      - cardsHtml
+      properties:
+        teamText:
+          type: string
+        statsDate:
+          type: string
+          pattern: ^[0-9]{4}-[0-9]{2}$
+        cardsHtml:
+          type: string
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        retryAfter:
+          type: integer
+          minimum: 1
+  securitySchemes:
+    cookieSession:
+      type: apiKey
+      in: cookie
+      name: session
+      description: Optional crob.at browser session cookie. Public endpoints do not require it.
+externalDocs:
+  description: Human-readable API documentation
+  url: https://crob.at/api

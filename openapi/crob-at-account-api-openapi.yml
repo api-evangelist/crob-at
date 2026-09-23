@@ -1,0 +1,145 @@
+openapi: 3.2.0
+info:
+  title: crob.at Account API
+  version: 1.0.0
+  description: Create, retrieve, and generate competitive Pokemon Showdown teams, read reference data, and use optional crob.at session helpers.
+  termsOfService: https://crob.at/api#terms
+  contact:
+    name: crob.at API support
+    url: https://crob.at/contact
+    email: admin@crob.at
+servers:
+- url: https://crob.at
+  description: Production
+security: []
+tags:
+- name: Account
+  description: Optional same-origin helpers that use a crob.at browser session.
+paths:
+  /api/me:
+    get:
+      tags:
+      - Account
+      summary: Read the current user
+      description: Returns the current crob.at user when a valid browser session cookie is present, otherwise returns a null user.
+      operationId: getCurrentUser
+      security:
+      - cookieSession: []
+      - {}
+      responses:
+        '200':
+          description: The current user or null.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - user
+                properties:
+                  user:
+                    oneOf:
+                    - $ref: '#/components/schemas/CurrentUser'
+                    - type: 'null'
+  /api/showdown/assertion:
+    post:
+      tags:
+      - Account
+      summary: Start browser-side Showdown assertion generation
+      description: Redirects the signed-in user's browser to Pokemon Showdown so the challstr-specific assertion is generated from the user's network rather than crob.at's server.
+      operationId: createShowdownAssertion
+      security:
+      - cookieSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - challstr
+              properties:
+                challstr:
+                  type: string
+                  minLength: 1
+                  maxLength: 2048
+                  pattern: ^[^\r\n]+$
+                  description: A Pokemon Showdown challenge string without line breaks.
+      responses:
+        '303':
+          description: Redirect to Pokemon Showdown's OAuth assertion endpoint.
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: uri
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: A linked, authenticated Showdown account is required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Showdown OAuth is not configured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    CurrentUser:
+      type: object
+      required:
+      - username
+      - email
+      - ps_username
+      - team_count
+      - favorite_count
+      properties:
+        username:
+          type: string
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+        ps_username:
+          type:
+          - string
+          - 'null'
+        team_count:
+          type: integer
+          minimum: 0
+        favorite_count:
+          type: integer
+          minimum: 0
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        retryAfter:
+          type: integer
+          minimum: 1
+  responses:
+    BadRequest:
+      description: The request body or route parameter is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    cookieSession:
+      type: apiKey
+      in: cookie
+      name: session
+      description: Optional crob.at browser session cookie. Public endpoints do not require it.
+externalDocs:
+  description: Human-readable API documentation
+  url: https://crob.at/api

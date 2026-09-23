@@ -1,0 +1,109 @@
+openapi: 3.2.0
+info:
+  title: crob.at Feedback API
+  version: 1.0.0
+  description: Create, retrieve, and generate competitive Pokemon Showdown teams, read reference data, and use optional crob.at session helpers.
+  termsOfService: https://crob.at/api#terms
+  contact:
+    name: crob.at API support
+    url: https://crob.at/contact
+    email: admin@crob.at
+servers:
+- url: https://crob.at
+  description: Production
+security: []
+tags:
+- name: Feedback
+  description: Send product feedback to the crob.at team.
+paths:
+  /api/feedback:
+    post:
+      tags:
+      - Feedback
+      summary: Send feedback
+      description: Sends a feedback message with optional contact details.
+      operationId: sendFeedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - message
+              properties:
+                message:
+                  type: string
+                  minLength: 1
+                  maxLength: 2000
+                  pattern: \S
+                  description: The trimmed message must contain a non-whitespace character and be at most 2,000 characters.
+                contact:
+                  type: string
+                  description: Optional contact details. Values longer than 100 characters are truncated.
+      responses:
+        '201':
+          description: Feedback was accepted.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - success
+                properties:
+                  success:
+                    const: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/RetryAfterRateLimited'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    ServerError:
+      description: The request could not be completed because of a server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: The request body or route parameter is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RetryAfterRateLimited:
+      description: The per-client write limit was exceeded.
+      headers:
+        Retry-After:
+          description: Seconds until the request may be retried.
+          schema:
+            type: integer
+            minimum: 1
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        retryAfter:
+          type: integer
+          minimum: 1
+  securitySchemes:
+    cookieSession:
+      type: apiKey
+      in: cookie
+      name: session
+      description: Optional crob.at browser session cookie. Public endpoints do not require it.
+externalDocs:
+  description: Human-readable API documentation
+  url: https://crob.at/api

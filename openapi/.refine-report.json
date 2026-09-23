@@ -1,0 +1,28 @@
+{
+  "provider": "crob-at",
+  "sources": [
+    "_original/crob-at-openapi.json"
+  ],
+  "outputs": [
+    "crob-at-account-api-openapi.yml",
+    "crob-at-feedback-api-openapi.yml",
+    "crob-at-generation-api-openapi.yml",
+    "crob-at-reference-api-openapi.yml",
+    "crob-at-teams-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "crob-at-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "crob-at-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "crob-at-feedback-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "crob-at-generation-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "crob-at-reference-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "crob-at-teams-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}
