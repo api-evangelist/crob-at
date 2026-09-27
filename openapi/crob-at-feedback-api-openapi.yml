@@ -67,12 +67,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: The request body or route parameter is invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     RetryAfterRateLimited:
       description: The per-client write limit was exceeded.
       headers:
@@ -81,6 +75,12 @@ components:
           schema:
             type: integer
             minimum: 1
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: The request body or route parameter is invalid.
       content:
         application/json:
           schema:

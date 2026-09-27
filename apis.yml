@@ -33,7 +33,6 @@ apis:
   name: crob.at Account API
   description: Optional same-origin helpers that use a crob.at browser session.
   humanURL: https://crob.at/api
-  baseURL: https://crob.at
   tags:
   - Account
   properties:
@@ -49,7 +48,6 @@ apis:
   name: crob.at Feedback API
   description: Send product feedback to the crob.at team.
   humanURL: https://crob.at/api
-  baseURL: https://crob.at
   tags:
   - Feedback
   properties:
@@ -65,7 +63,6 @@ apis:
   name: crob.at Generation API
   description: Generate and optionally save competitive random teams.
   humanURL: https://crob.at/api
-  baseURL: https://crob.at
   tags:
   - Generation
   properties:
@@ -81,7 +78,6 @@ apis:
   name: crob.at Reference API
   description: Read sample teams and Pokemon reference data.
   humanURL: https://crob.at/api
-  baseURL: https://crob.at
   tags:
   - Reference
   properties:
@@ -97,7 +93,6 @@ apis:
   name: crob.at Teams API
   description: Create and retrieve shareable Pokemon Showdown teams.
   humanURL: https://crob.at/api
-  baseURL: https://crob.at
   tags:
   - Team
   tags_raw:

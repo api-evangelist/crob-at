@@ -91,21 +91,56 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 components:
+  schemas:
+    GeneratedTeam:
+      type: object
+      required:
+      - teamText
+      - statsDate
+      - cardsHtml
+      properties:
+        teamText:
+          type: string
+        statsDate:
+          type: string
+          pattern: ^[0-9]{4}-[0-9]{2}$
+        cardsHtml:
+          type: string
+    CreatedTeam:
+      type: object
+      required:
+      - slug
+      - url
+      - image
+      properties:
+        slug:
+          type: string
+        url:
+          type: string
+          format: uri
+        image:
+          type: string
+          format: uri
+        management_token:
+          type: string
+          minLength: 48
+          maxLength: 48
+          description: Private creator capability returned by POST /api/team. Store it securely to change visibility later; do not include it in shared team URLs.
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        retryAfter:
+          type: integer
+          minimum: 1
   responses:
     ServerError:
       description: The request could not be completed because of a server error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: The request body or route parameter is invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
       content:
         application/json:
           schema:
@@ -135,6 +170,18 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: The request body or route parameter is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
     Format:
       name: format
@@ -144,53 +191,6 @@ components:
       schema:
         type: string
         pattern: ^[a-z0-9]+$
-  schemas:
-    CreatedTeam:
-      type: object
-      required:
-      - slug
-      - url
-      - image
-      properties:
-        slug:
-          type: string
-        url:
-          type: string
-          format: uri
-        image:
-          type: string
-          format: uri
-        management_token:
-          type: string
-          minLength: 48
-          maxLength: 48
-          description: Private creator capability returned by POST /api/team. Store it securely to change visibility later; do not include it in shared team URLs.
-    GeneratedTeam:
-      type: object
-      required:
-      - teamText
-      - statsDate
-      - cardsHtml
-      properties:
-        teamText:
-          type: string
-        statsDate:
-          type: string
-          pattern: ^[0-9]{4}-[0-9]{2}$
-        cardsHtml:
-          type: string
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-        message:
-          type: string
-        retryAfter:
-          type: integer
-          minimum: 1
   securitySchemes:
     cookieSession:
       type: apiKey
