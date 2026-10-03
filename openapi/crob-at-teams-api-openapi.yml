@@ -109,35 +109,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
-    TeamInPaste:
-      type: object
-      required:
-      - paste_slug
-      - slug
-      - format
-      - name
-      - paste
-      - url
-      - image
-      properties:
-        paste_slug:
-          type: string
-          description: The parent multi-team paste's public slug.
-        slug:
-          type: string
-          description: The selected team's slug within the parent paste.
-        format:
-          type: string
-        name:
-          type: string
-        paste:
-          type: string
-        url:
-          type: string
-          format: uri
-        image:
-          type: string
-          format: uri
     CreateTeamRequest:
       type: object
       required:
@@ -175,53 +146,6 @@ components:
                 type: string
                 minLength: 1
                 maxLength: 500000
-    CreatedTeam:
-      type: object
-      required:
-      - slug
-      - url
-      - image
-      properties:
-        slug:
-          type: string
-        url:
-          type: string
-          format: uri
-        image:
-          type: string
-          format: uri
-        management_token:
-          type: string
-          minLength: 48
-          maxLength: 48
-          description: Private creator capability returned by POST /api/team. Store it securely to change visibility later; do not include it in shared team URLs.
-    TeamPaste:
-      type: object
-      required:
-      - paste
-      properties:
-        format:
-          type:
-          - string
-          - 'null'
-        name:
-          type:
-          - string
-          - 'null'
-        paste:
-          type: string
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-        message:
-          type: string
-        retryAfter:
-          type: integer
-          minimum: 1
     Team:
       type: object
       required:
@@ -274,9 +198,97 @@ components:
           minItems: 1
           items:
             $ref: '#/components/schemas/TeamPaste'
+    TeamPaste:
+      type: object
+      required:
+      - paste
+      properties:
+        format:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        paste:
+          type: string
+    CreatedTeam:
+      type: object
+      required:
+      - slug
+      - url
+      - image
+      properties:
+        slug:
+          type: string
+        url:
+          type: string
+          format: uri
+        image:
+          type: string
+          format: uri
+        management_token:
+          type: string
+          minLength: 48
+          maxLength: 48
+          description: Private creator capability returned by POST /api/team. Store it securely to change visibility later; do not include it in shared team URLs.
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        retryAfter:
+          type: integer
+          minimum: 1
+    TeamInPaste:
+      type: object
+      required:
+      - paste_slug
+      - slug
+      - format
+      - name
+      - paste
+      - url
+      - image
+      properties:
+        paste_slug:
+          type: string
+          description: The parent multi-team paste's public slug.
+        slug:
+          type: string
+          description: The selected team's slug within the parent paste.
+        format:
+          type: string
+        name:
+          type: string
+        paste:
+          type: string
+        url:
+          type: string
+          format: uri
+        image:
+          type: string
+          format: uri
   responses:
     ServerError:
       description: The request could not be completed because of a server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: The request body or route parameter is invalid.
       content:
         application/json:
           schema:
@@ -302,18 +314,6 @@ components:
           schema:
             type: string
             format: date-time
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: The request body or route parameter is invalid.
       content:
         application/json:
           schema:
