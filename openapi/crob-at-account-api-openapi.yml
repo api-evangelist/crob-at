@@ -88,6 +88,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 components:
+  responses:
+    BadRequest:
+      description: The request body or route parameter is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
     CurrentUser:
       type: object
@@ -127,13 +134,6 @@ components:
         retryAfter:
           type: integer
           minimum: 1
-  responses:
-    BadRequest:
-      description: The request body or route parameter is invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     cookieSession:
       type: apiKey

@@ -109,43 +109,35 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
-    CreateTeamRequest:
+    TeamInPaste:
       type: object
       required:
-      - teams
+      - paste_slug
+      - slug
+      - format
+      - name
+      - paste
+      - url
+      - image
       properties:
+        paste_slug:
+          type: string
+          description: The parent multi-team paste's public slug.
+        slug:
+          type: string
+          description: The selected team's slug within the parent paste.
+        format:
+          type: string
         name:
           type: string
-          description: Optional team name. Values longer than 100 characters are truncated.
-        author:
+        paste:
           type: string
-          description: Optional author. Values longer than 50 characters are truncated.
-        description:
+        url:
           type: string
-          description: Optional description. The trimmed value is truncated to 1,000 characters.
-        public:
-          type: boolean
-          default: false
-          description: Whether the team may appear in the public gallery.
-        teams:
-          type: array
-          minItems: 1
-          description: One or more teams. The combined normalized Showdown export must not exceed 500,000 characters.
-          items:
-            type: object
-            required:
-            - paste
-            properties:
-              name:
-                type: string
-                description: Optional team name. Values longer than 100 characters are truncated.
-              format:
-                type: string
-                description: A supported Pokemon Showdown format ID or name. The server normalizes names to IDs.
-              paste:
-                type: string
-                minLength: 1
-                maxLength: 500000
+          format: uri
+        image:
+          type: string
+          format: uri
     Team:
       type: object
       required:
@@ -198,21 +190,43 @@ components:
           minItems: 1
           items:
             $ref: '#/components/schemas/TeamPaste'
-    TeamPaste:
+    CreateTeamRequest:
       type: object
       required:
-      - paste
+      - teams
       properties:
-        format:
-          type:
-          - string
-          - 'null'
         name:
-          type:
-          - string
-          - 'null'
-        paste:
           type: string
+          description: Optional team name. Values longer than 100 characters are truncated.
+        author:
+          type: string
+          description: Optional author. Values longer than 50 characters are truncated.
+        description:
+          type: string
+          description: Optional description. The trimmed value is truncated to 1,000 characters.
+        public:
+          type: boolean
+          default: false
+          description: Whether the team may appear in the public gallery.
+        teams:
+          type: array
+          minItems: 1
+          description: One or more teams. The combined normalized Showdown export must not exceed 500,000 characters.
+          items:
+            type: object
+            required:
+            - paste
+            properties:
+              name:
+                type: string
+                description: Optional team name. Values longer than 100 characters are truncated.
+              format:
+                type: string
+                description: A supported Pokemon Showdown format ID or name. The server normalizes names to IDs.
+              paste:
+                type: string
+                minLength: 1
+                maxLength: 500000
     CreatedTeam:
       type: object
       required:
@@ -245,48 +259,22 @@ components:
         retryAfter:
           type: integer
           minimum: 1
-    TeamInPaste:
+    TeamPaste:
       type: object
       required:
-      - paste_slug
-      - slug
-      - format
-      - name
       - paste
-      - url
-      - image
       properties:
-        paste_slug:
-          type: string
-          description: The parent multi-team paste's public slug.
-        slug:
-          type: string
-          description: The selected team's slug within the parent paste.
         format:
-          type: string
+          type:
+          - string
+          - 'null'
         name:
-          type: string
+          type:
+          - string
+          - 'null'
         paste:
           type: string
-        url:
-          type: string
-          format: uri
-        image:
-          type: string
-          format: uri
   responses:
-    ServerError:
-      description: The request could not be completed because of a server error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     BadRequest:
       description: The request body or route parameter is invalid.
       content:
@@ -314,6 +302,18 @@ components:
           schema:
             type: string
             format: date-time
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: The request could not be completed because of a server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
       content:
         application/json:
           schema:

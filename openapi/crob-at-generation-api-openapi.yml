@@ -138,19 +138,16 @@ components:
         retryAfter:
           type: integer
           minimum: 1
+  parameters:
+    Format:
+      name: format
+      in: path
+      required: true
+      description: An alphanumeric Showdown format identifier, such as gen9ou.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]+$
   responses:
-    ServerError:
-      description: The request could not be completed because of a server error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     BadRequest:
       description: The request body or route parameter is invalid.
       content:
@@ -182,15 +179,18 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-  parameters:
-    Format:
-      name: format
-      in: path
-      required: true
-      description: An alphanumeric Showdown format identifier, such as gen9ou.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]+$
+    ServerError:
+      description: The request could not be completed because of a server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     cookieSession:
       type: apiKey
