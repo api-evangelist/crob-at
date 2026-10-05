@@ -1,0 +1,12 @@
+{
+ "url": "https://crob.at/openapi.json",
+ "requested_url": "https://crob.at/openapi.json",
+ "status": 200,
+ "content_type": "application/json;charset=utf-8",
+ "bytes": 23481,
+ "sha256": "19e64f0bd4644da4d4508f530b59f4c1da5b15ad95874515b52bb60c44a59bc1",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
