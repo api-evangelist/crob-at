@@ -88,14 +88,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 components:
-  responses:
-    BadRequest:
-      description: The request body or route parameter is invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        retryAfter:
+          type: integer
+          minimum: 1
     CurrentUser:
       type: object
       required:
@@ -122,18 +127,13 @@ components:
         favorite_count:
           type: integer
           minimum: 0
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-        message:
-          type: string
-        retryAfter:
-          type: integer
-          minimum: 1
+  responses:
+    BadRequest:
+      description: The request body or route parameter is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     cookieSession:
       type: apiKey

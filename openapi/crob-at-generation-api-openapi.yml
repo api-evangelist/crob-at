@@ -91,65 +91,9 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 components:
-  schemas:
-    GeneratedTeam:
-      type: object
-      required:
-      - teamText
-      - statsDate
-      - cardsHtml
-      properties:
-        teamText:
-          type: string
-        statsDate:
-          type: string
-          pattern: ^[0-9]{4}-[0-9]{2}$
-        cardsHtml:
-          type: string
-    CreatedTeam:
-      type: object
-      required:
-      - slug
-      - url
-      - image
-      properties:
-        slug:
-          type: string
-        url:
-          type: string
-          format: uri
-        image:
-          type: string
-          format: uri
-        management_token:
-          type: string
-          minLength: 48
-          maxLength: 48
-          description: Private creator capability returned by POST /api/team. Store it securely to change visibility later; do not include it in shared team URLs.
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-        message:
-          type: string
-        retryAfter:
-          type: integer
-          minimum: 1
-  parameters:
-    Format:
-      name: format
-      in: path
-      required: true
-      description: An alphanumeric Showdown format identifier, such as gen9ou.
-      schema:
-        type: string
-        pattern: ^[a-z0-9]+$
   responses:
-    BadRequest:
-      description: The request body or route parameter is invalid.
+    ServerError:
+      description: The request could not be completed because of a server error.
       content:
         application/json:
           schema:
@@ -179,8 +123,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    ServerError:
-      description: The request could not be completed because of a server error.
+    BadRequest:
+      description: The request body or route parameter is invalid.
       content:
         application/json:
           schema:
@@ -191,6 +135,62 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+  schemas:
+    GeneratedTeam:
+      type: object
+      required:
+      - teamText
+      - statsDate
+      - cardsHtml
+      properties:
+        teamText:
+          type: string
+        statsDate:
+          type: string
+          pattern: ^[0-9]{4}-[0-9]{2}$
+        cardsHtml:
+          type: string
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        retryAfter:
+          type: integer
+          minimum: 1
+    CreatedTeam:
+      type: object
+      required:
+      - slug
+      - url
+      - image
+      properties:
+        slug:
+          type: string
+        url:
+          type: string
+          format: uri
+        image:
+          type: string
+          format: uri
+        management_token:
+          type: string
+          minLength: 48
+          maxLength: 48
+          description: Private creator capability returned by POST /api/team. Store it securely to change visibility later; do not include it in shared team URLs.
+  parameters:
+    Format:
+      name: format
+      in: path
+      required: true
+      description: An alphanumeric Showdown format identifier, such as gen9ou.
+      schema:
+        type: string
+        pattern: ^[a-z0-9]+$
   securitySchemes:
     cookieSession:
       type: apiKey

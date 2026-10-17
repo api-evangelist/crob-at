@@ -108,7 +108,66 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 components:
+  responses:
+    ServerError:
+      description: The request could not be completed because of a server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: The per-client write limit was exceeded.
+      headers:
+        Retry-After:
+          description: Seconds until the request may be retried.
+          schema:
+            type: integer
+            minimum: 1
+        X-RateLimit-Limit:
+          description: Requests permitted in the current window.
+          schema:
+            type: integer
+        X-RateLimit-Remaining:
+          description: Requests remaining in the current window.
+          schema:
+            type: integer
+        X-RateLimit-Reset:
+          description: ISO 8601 timestamp when the window resets.
+          schema:
+            type: string
+            format: date-time
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: The request body or route parameter is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
+    TeamPaste:
+      type: object
+      required:
+      - paste
+      properties:
+        format:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        paste:
+          type: string
     TeamInPaste:
       type: object
       required:
@@ -227,6 +286,18 @@ components:
                 type: string
                 minLength: 1
                 maxLength: 500000
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        retryAfter:
+          type: integer
+          minimum: 1
     CreatedTeam:
       type: object
       required:
@@ -247,77 +318,6 @@ components:
           minLength: 48
           maxLength: 48
           description: Private creator capability returned by POST /api/team. Store it securely to change visibility later; do not include it in shared team URLs.
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-        message:
-          type: string
-        retryAfter:
-          type: integer
-          minimum: 1
-    TeamPaste:
-      type: object
-      required:
-      - paste
-      properties:
-        format:
-          type:
-          - string
-          - 'null'
-        name:
-          type:
-          - string
-          - 'null'
-        paste:
-          type: string
-  responses:
-    BadRequest:
-      description: The request body or route parameter is invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    RateLimited:
-      description: The per-client write limit was exceeded.
-      headers:
-        Retry-After:
-          description: Seconds until the request may be retried.
-          schema:
-            type: integer
-            minimum: 1
-        X-RateLimit-Limit:
-          description: Requests permitted in the current window.
-          schema:
-            type: integer
-        X-RateLimit-Remaining:
-          description: Requests remaining in the current window.
-          schema:
-            type: integer
-        X-RateLimit-Reset:
-          description: ISO 8601 timestamp when the window resets.
-          schema:
-            type: string
-            format: date-time
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    ServerError:
-      description: The request could not be completed because of a server error.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     cookieSession:
       type: apiKey
