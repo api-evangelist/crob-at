@@ -1,4 +1,4 @@
-# crob-at
+# crob.at
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,4 +64,139 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Free, no-login web tool for sharing Pokémon Showdown teams as visual pages, with a public REST API for creating/retrieving teams, generating random teams, and fetching sample teams.
+Free, no-login web tool for sharing Pokémon Showdown teams as visual pages, with an anonymous keyless public REST API for creating and retrieving team links, generating usage-weighted random teams, and fetching Smogon sample teams and Pokémon type reference data. Publishes an OpenAPI 3.1 contract, APIs.json, an RFC 9727 api-catalog, llms.txt, and markdown twins of every team page for AI agents.
+
+**Areas:** Gaming · Esports · Pokemon · Pokemon Showdown · Team Building · Content Rendering · Developer Tools · REST API
+
+## crob.at on APIs.io
+
+Everything profiled for crob.at is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/crob-at/](https://apis.io/providers/crob-at/)** — or go straight to one of the APIs or properties below.
+
+### APIs (5)
+
+- [crob.at Account API](https://apis.io/apis/crob-at/crob-at-account-api/) — Optional same-origin helpers that use a crob.at browser session.
+- [crob.at Feedback API](https://apis.io/apis/crob-at/crob-at-feedback-api/) — Send product feedback to the crob.at team.
+- [crob.at Generation API](https://apis.io/apis/crob-at/crob-at-generation-api/) — Generate and optionally save competitive random teams.
+- [crob.at Reference API](https://apis.io/apis/crob-at/crob-at-reference-api/) — Read sample teams and Pokemon reference data.
+- [crob.at Teams API](https://apis.io/apis/crob-at/crob-at-teams-api/) — Create and retrieve shareable Pokemon Showdown teams.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [crob-at-mcp.yml](https://apis.io/servers/crob-at/crob-at-mcp-yml/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Crob At Agentic Access](https://apis.io/agentic-access/crob-at/crob-at-agentic-access/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Crob At Rest Api Overlay](https://apis.io/overlays/crob-at/crob-at-rest-api-overlay/)
+
+#### Governance rules (1)
+
+Spectral rulesets for the provider's contracts.
+
+- [crob.at — spectral rules](https://apis.io/rules/crob-at/crob-at-spectral/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Crob At Authentication](https://apis.io/security/crob-at/crob-at-authentication/)
+- [Crob At Domain Security](https://apis.io/security/crob-at/crob-at-domain-security/)
+- [Crob At Vulnerability Disclosure](https://apis.io/security/crob-at/crob-at-vulnerability-disclosure/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Crob At Plans Pricing](https://apis.io/plans/crob-at/crob-at-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Crob At Rate Limits](https://apis.io/rate-limits/crob-at/crob-at-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Crob At Finops](https://apis.io/finops/crob-at/crob-at-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://crob.at)
+- [Pricing](https://crob.at/api#plans)
+- [Sign up](https://crob.at/signup)
+- [Support](https://crob.at/contact)
+- [Security](https://crob.at/api#security)
+- [Terms of service](https://crob.at/api#terms)
+- [Privacy policy](https://crob.at/privacy)
+
+## API Evangelist rating
+
+**Kin Score 50.3** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 60.7 |
+| Contract quality | 49.7 |
+| Contract governance | 22.0 |
+| Operational transparency | 42.1 |
+| Developer ergonomics | 44.6 |
+| Access clarity | 65.8 |
+
+**Agent readiness 40.3** — agent-native
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | verified |
+| Error Semantics | verified |
+| OpenAPI Examples | — |
+| Rate Limit Signal | verified |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | yes |
+| Consent Identity | yes |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | — |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 30.4** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/crob-at/](https://apis.io/providers/crob-at/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for crob.at: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/crob-at/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
